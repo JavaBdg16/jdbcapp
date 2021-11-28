@@ -4,6 +4,8 @@ import entity.EmailAddress;
 import entity.Person;
 import service.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class Application {
             System.out.println("3) Zaktualizuj adres email");
             System.out.println("4) Usuń adres email");
             System.out.println("5) Wyznacz poziom osoby");
+            System.out.println("6) zapisz obrazek w bazie danych");
             int option = scanner.nextInt();
             scanner.nextLine();
 
@@ -72,6 +75,12 @@ public class Application {
                     scanner.nextLine();
                     PersonLevelService.calculatePersonLevel(personId);
                     break;
+                case 6:
+                    File file = new File("files/space.jpg");
+                    System.out.println("Podaj identyfikator osoby:");
+                    personId = scanner.nextInt();
+                    scanner.nextLine();
+                    PersonImageService.insertImage(file, personId);
                 default:
                     System.out.println("Nie rozumiem co chcesz zrobić");
             }
