@@ -2,10 +2,7 @@ package app;
 
 import entity.EmailAddress;
 import entity.Person;
-import service.DeleteEmailAddressService;
-import service.InsertTransactionService;
-import service.UpdateEmailAddressService;
-import service.UpdatePersonService;
+import service.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -35,6 +32,7 @@ public class Application {
             System.out.println("2) Zaktualizuj osobę");
             System.out.println("3) Zaktualizuj adres email");
             System.out.println("4) Usuń adres email");
+            System.out.println("5) Wyznacz poziom osoby");
             int option = scanner.nextInt();
             scanner.nextLine();
 
@@ -67,6 +65,12 @@ public class Application {
                     emailAddressId = scanner.nextInt();
                     scanner.nextLine();
                     DeleteEmailAddressService.delete(emailAddressId);
+                    break;
+                case 5:
+                    System.out.println("Podaj identyfikator osoby:");
+                    personId = scanner.nextInt();
+                    scanner.nextLine();
+                    PersonLevelService.calculatePersonLevel(personId);
                     break;
                 default:
                     System.out.println("Nie rozumiem co chcesz zrobić");
