@@ -4,6 +4,7 @@ import entity.Person;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Application {
 
@@ -13,11 +14,88 @@ public class Application {
 
         System.out.println("Połączenie z bazą danych? " + tryConnect());
         printPersonList();
-        List<Person> person = findPersonsByContactedNumber(1, 10);
+        List<Person> person = findPersonsByContactedNumber(0, 100);
         person.forEach(System.out::println);
 
 //        List<EmailAddress> emailAddresses = findEmailAddressByPersonId(1);
 //        emailAddresses.forEach(System.out::println);
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Co chcesz zrobić?");
+        System.out.println("1) Dodaj nową osobę");
+
+        while (true) {
+            int option = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (option) {
+                case 1:
+                    System.out.print("Podaj imię: ");
+                    String firstName = scanner.nextLine();
+                    System.out.print("Podaj nazwisko: ");
+                    String lastName = scanner.nextLine();
+                    System.out.print("Podaj adres email: ");
+                    String emailAddress = scanner.nextLine();
+                    addPerson(firstName, lastName, emailAddress);
+                    break;
+                default:
+                    System.out.println("Nie rozumiem co chcesz zrobić");
+            }
+        }
+    }
+
+    private static void addPerson(String firstName, String lastName, String emailAddress) {
+        String queryPerson = "INSERT INTO person " +
+                "(first_name, last_name, contacted_number, date_last_contacted, date_added) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        String emailAddressQuery = "INSERT INTO email_address (person_id, email_address) " +
+                "VALUES (?, ?)";
+
+        int personId = 0;
+
+        try (Connection connection =
+                     DriverManager.getConnection(CONNECTION_URL, "root", "Torun2020");
+             PreparedStatement statement = connection.prepareStatement(queryPerson, Statement.RETURN_GENERATED_KEYS)) {
+
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            statement.setInt(3, 0);
+            statement.setDate(4, new java.sql.Date(new java.util.Date().getTime()));
+            statement.setDate(5, new java.sql.Date(new java.util.Date().getTime()));
+
+            statement.executeUpdate();
+
+            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+
+                if (resultSet.next()) {
+                    personId = resultSet.getInt(1);
+                }
+
+            } catch (SQLException ex) {
+                throw ex;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        if (personId > 0) {
+
+            try (Connection connection =
+                         DriverManager.getConnection(CONNECTION_URL, "root", "Torun2020");
+                 PreparedStatement statement = connection.prepareStatement(emailAddressQuery)) {
+
+                statement.setInt(1, personId);
+                statement.setString(2, emailAddress);
+
+                statement.executeUpdate();
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+        }
     }
 
     /**
