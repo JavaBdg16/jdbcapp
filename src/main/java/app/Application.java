@@ -1,5 +1,8 @@
+package app;
+
 import entity.EmailAddress;
 import entity.Person;
+import service.InsertTransactionService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,7 +11,7 @@ import java.util.Scanner;
 
 public class Application {
 
-    private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/Contacts?serverTimezone=UTC";
+    public static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/Contacts?serverTimezone=UTC";
 
     public static void main(String[] args) {
 
@@ -36,7 +39,7 @@ public class Application {
                     String lastName = scanner.nextLine();
                     System.out.print("Podaj adres email: ");
                     String emailAddress = scanner.nextLine();
-                    addPerson(firstName, lastName, emailAddress);
+                    InsertTransactionService.addPerson(firstName, lastName, emailAddress);
                     break;
                 default:
                     System.out.println("Nie rozumiem co chcesz zrobić");
@@ -97,6 +100,8 @@ public class Application {
 
         }
     }
+
+
 
     /**
      * Zwraca informację, czy udało się połączyć z bazą Contacts
