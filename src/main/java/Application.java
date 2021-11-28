@@ -1,4 +1,8 @@
+import entity.Person;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Application {
 
@@ -8,6 +12,8 @@ public class Application {
 
         System.out.println("Połączenie z bazą danych? " + tryConnect());
         printPersonList();
+        List<Person> person = findPersonsByContactedNumber(1, 10);
+        person.forEach(System.out::println);
     }
 
     /**
@@ -85,7 +91,55 @@ public class Application {
             }
 
         } catch (SQLException ex) {
-
+            ex.printStackTrace();
         }
+    }
+
+    private static List<Person> findPersonsByContactedNumber(int min, int max) {
+
+        String query = "SELECT " +
+                "id, " +
+                "first_name, " +
+                "last_name, " +
+                "contacted_number, " +
+                "date_last_contacted, " +
+                "date_added " +
+                "FROM person " +
+                "WHERE contacted_number BETWEEN ? AND ?";
+
+        try (Connection connection =
+                     DriverManager.getConnection(CONNECTION_URL, "root", "Torun2020");
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, min);
+            statement.setInt(2, max);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                List<Person> result = new ArrayList<>();
+                while (resultSet.next()) {
+                    Person person = new Person();
+
+                    person.setId(resultSet.getInt("id"));
+                    person.setFirstName(resultSet.getString("first_name"));
+                    person.setLastName(resultSet.getString("last_name"));
+                    person.setContactedNumber(resultSet.getInt("contacted_number"));
+                    person.setLastContactedDate(resultSet.getDate("date_last_contacted"));
+                    person.setDateAdded(resultSet.getDate("date_added"));
+
+                    result.add(person);
+                }
+
+                return result;
+
+            } catch (SQLException ex) {
+                throw ex;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 }
