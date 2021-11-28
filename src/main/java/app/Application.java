@@ -2,7 +2,9 @@ package app;
 
 import entity.EmailAddress;
 import entity.Person;
+import service.DeleteEmailAddressService;
 import service.InsertTransactionService;
+import service.UpdateEmailAddressService;
 import service.UpdatePersonService;
 
 import java.sql.*;
@@ -31,6 +33,8 @@ public class Application {
             System.out.println("Co chcesz zrobić?");
             System.out.println("1) Dodaj nową osobę");
             System.out.println("2) Zaktualizuj osobę");
+            System.out.println("3) Zaktualizuj adres email");
+            System.out.println("4) Usuń adres email");
             int option = scanner.nextInt();
             scanner.nextLine();
 
@@ -49,6 +53,20 @@ public class Application {
                     int personId = scanner.nextInt();
                     scanner.nextLine();
                     UpdatePersonService.contactWithPerson(personId, new java.util.Date());
+                    break;
+                case 3:
+                    System.out.println("Podaj identyfikator adresu email:");
+                    int emailAddressId = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Podaj adres email: ");
+                    emailAddress = scanner.nextLine();
+                    UpdateEmailAddressService.update(emailAddressId, emailAddress);
+                    break;
+                case 4:
+                    System.out.println("Podaj identyfikator adresu email:");
+                    emailAddressId = scanner.nextInt();
+                    scanner.nextLine();
+                    DeleteEmailAddressService.delete(emailAddressId);
                     break;
                 default:
                     System.out.println("Nie rozumiem co chcesz zrobić");
