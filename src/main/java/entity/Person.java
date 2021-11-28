@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class Person {
 
@@ -10,6 +11,7 @@ public class Person {
     private int contactedNumber;
     private Date lastContactedDate;
     private Date dateAdded;
+    private List<EmailAddress> emailAddresses;
 
     public int getId() {
         return id;
@@ -59,6 +61,14 @@ public class Person {
         this.dateAdded = dateAdded;
     }
 
+    public List<EmailAddress> getEmailAddresses() {
+        return emailAddresses;
+    }
+
+    public void setEmailAddresses(List<EmailAddress> emailAddresses) {
+        this.emailAddresses = emailAddresses;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -68,6 +78,7 @@ public class Person {
                 ", contactedNumber=" + contactedNumber +
                 ", lastContactedDate=" + lastContactedDate +
                 ", dateAdded=" + dateAdded +
+                ", emailAddresses=" + emailAddresses +
                 '}';
     }
 }

@@ -1,3 +1,4 @@
+import entity.EmailAddress;
 import entity.Person;
 
 import java.sql.*;
@@ -14,6 +15,9 @@ public class Application {
         printPersonList();
         List<Person> person = findPersonsByContactedNumber(1, 10);
         person.forEach(System.out::println);
+
+//        List<EmailAddress> emailAddresses = findEmailAddressByPersonId(1);
+//        emailAddresses.forEach(System.out::println);
     }
 
     /**
@@ -126,6 +130,7 @@ public class Application {
                     person.setContactedNumber(resultSet.getInt("contacted_number"));
                     person.setLastContactedDate(resultSet.getDate("date_last_contacted"));
                     person.setDateAdded(resultSet.getDate("date_added"));
+                    person.setEmailAddresses(findEmailAddressByPersonId(person.getId()));
 
                     result.add(person);
                 }
@@ -135,6 +140,42 @@ public class Application {
             } catch (SQLException ex) {
                 throw ex;
             }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static List<EmailAddress> findEmailAddressByPersonId(int personId) {
+
+        String query = "SELECT " +
+                "id, " +
+                "person_id, " +
+                "email_address " +
+                "FROM email_address " +
+                "WHERE person_id = ?";
+
+        try (Connection connection =
+                     DriverManager.getConnection(CONNECTION_URL, "root", "Torun2020");
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, personId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            List<EmailAddress> result = new ArrayList<>();
+            while (resultSet.next()) {
+                EmailAddress emailAddress = new EmailAddress();
+                emailAddress.setEmailAddress(resultSet.getString("email_address"));
+                emailAddress.setId(resultSet.getInt("id"));
+                emailAddress.setPersonId(resultSet.getInt("person_id"));
+
+                result.add(emailAddress);
+            }
+
+            return result;
 
         } catch (SQLException ex) {
             ex.printStackTrace();
