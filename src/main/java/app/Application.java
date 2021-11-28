@@ -3,6 +3,7 @@ package app;
 import entity.EmailAddress;
 import entity.Person;
 import service.InsertTransactionService;
+import service.UpdatePersonService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,10 +25,12 @@ public class Application {
 //        emailAddresses.forEach(System.out::println);
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Co chcesz zrobić?");
-        System.out.println("1) Dodaj nową osobę");
+
 
         while (true) {
+            System.out.println("Co chcesz zrobić?");
+            System.out.println("1) Dodaj nową osobę");
+            System.out.println("2) Zaktualizuj osobę");
             int option = scanner.nextInt();
             scanner.nextLine();
 
@@ -40,6 +43,12 @@ public class Application {
                     System.out.print("Podaj adres email: ");
                     String emailAddress = scanner.nextLine();
                     InsertTransactionService.addPerson(firstName, lastName, emailAddress);
+                    break;
+                case 2:
+                    System.out.println("Podaj identyfikator osoby:");
+                    int personId = scanner.nextInt();
+                    scanner.nextLine();
+                    UpdatePersonService.contactWithPerson(personId, new java.util.Date());
                     break;
                 default:
                     System.out.println("Nie rozumiem co chcesz zrobić");
